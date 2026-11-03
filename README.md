@@ -12,6 +12,18 @@ Auto Pricing adjusts ride admission and shop product prices based on what your c
 
 Automatic pricing is on by default. Global settings persist in the game's preferences; individual switches are saved per park in the game's persistent data directory, under `AutoPricing`. The mod changes prices in the park, so consider making a separate save before trying it. Disabling the mod does not restore earlier prices.
 
+## Screenshots
+
+The green switch enables automatic pricing on a ride:
+
+![Ride window with automatic pricing enabled](assets/screenshots/ride.jpg)
+
+The grey switch leaves the selected shop product under manual control:
+
+![Shop product with automatic pricing disabled](assets/screenshots/shop-manual.jpg)
+
+Screenshots are from the game; the cover illustration is AI-generated.
+
 ## How it works
 
 Every 20 real seconds by default, the mod samples interested guests and estimates their valuation. Its target is based on the median valuation, capped using a lower percentile and the configured rejection target. It rounds to $0.10 and smooths small changes. For rides with fewer than five samples, it estimates a price from excitement; for products it leaves the price alone until there are at least five samples. The mod respects scenarios that require free rides or products.
