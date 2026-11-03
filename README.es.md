@@ -2,6 +2,22 @@
 
 El mod ajusta automáticamente los precios de las atracciones y los productos según la valoración de los visitantes. Usa español cuando Parkitect está en español e inglés para los demás idiomas. [English](README.md).
 
+## Un día en el parque
+
+**Visitante de una atracción:** «¿$8.60?» El mod estima el precio de entrada según los visitantes interesados en esa atracción.
+
+<img src="assets/illustrations/ride-guest.png" width="320" alt="Visitante preguntando por un precio de $8.60">
+
+**Visitante de una tienda:** «¿$4.40?» También puede estimar precios de productos si está activada esa opción.
+
+<img src="assets/illustrations/shop-guest.png" width="300" alt="Visitante preguntando por un producto de $4.40">
+
+**Administrador:** «Hora de descansar». Auto Pricing revisa los precios con el intervalo elegido; puedes pasar cualquier precio individual a control manual.
+
+<img src="assets/illustrations/sleeping-manager.png" width="420" alt="Administrador dormido junto a una computadora que calcula precios">
+
+El diálogo y los precios son ilustrativos: no son precios fijos ni una conversación dentro del juego. Consulta los detalles y límites más abajo.
+
 ## Instalación y uso
 
 [Suscríbete en Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3832850553) y activa **Auto Pricing** en los ajustes de mods del juego. Como alternativa, descarga la [versión publicada](https://github.com/weedoozas/parkitect-auto-pricing/releases/latest) y copia `AutoPrecios.dll` a una carpeta propia dentro de `Mods` y actívalo. En los ajustes puedes elegir atracciones y tiendas, nivel de precio, porcentaje máximo deseado de visitantes interesados que no pagarían e intervalo de ajuste.

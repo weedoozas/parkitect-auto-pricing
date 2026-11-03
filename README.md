@@ -4,6 +4,22 @@
 
 Auto Pricing adjusts ride admission and shop product prices based on what your current guests value. Set it once and keep building your park. English is the default; the mod switches to Spanish when Parkitect's language is Spanish. [Leer en español](README.es.md).
 
+## A day at the park
+
+**Ride guest:** “$8.60?” The mod estimates a ride's admission price from the guests interested in it.
+
+<img src="assets/illustrations/ride-guest.png" width="320" alt="Park guest asking about a ride price of $8.60">
+
+**Shop guest:** “$4.40?” It can estimate shop product prices too, when shop pricing is enabled.
+
+<img src="assets/illustrations/shop-guest.png" width="300" alt="Park guest asking about a shop price of $4.40">
+
+**Park manager:** “Time to relax.” Auto Pricing reviews the prices at the selected interval; you can still switch individual prices to manual.
+
+<img src="assets/illustrations/sleeping-manager.png" width="420" alt="Sleeping manager beside a computer calculating prices">
+
+The dialogue and prices are illustrative, not fixed prices or an in-game conversation. See the details and limitations below.
+
 ## Install and use
 
 1. [Subscribe on Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3832850553), then enable **Auto Pricing** in Parkitect's mod settings. Restart the game if prompted. Alternatively, download the [release](https://github.com/weedoozas/parkitect-auto-pricing/releases/latest) and copy `AutoPrecios.dll` into its own folder under the game's `Mods` directory and enable it there.
