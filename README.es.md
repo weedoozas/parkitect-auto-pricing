@@ -10,9 +10,9 @@ Pulsa **Precio auto. SÍ** junto al precio de una atracción o producto para fij
 
 ## Capturas
 
-![Atracción con precio automático activado](assets/screenshots/ride.jpg)
+![Atracción con precio automático activado](assets/screenshots/ride-es.jpg)
 
-![Producto con precio automático desactivado](assets/screenshots/shop-manual.jpg)
+![Producto con precio automático desactivado](assets/screenshots/shop-manual-es.jpg)
 
 Las capturas son del juego; la portada fue creada con IA.
 
