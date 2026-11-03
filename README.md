@@ -6,7 +6,7 @@ Auto Pricing adjusts ride admission and shop product prices based on what your c
 
 ## Install and use
 
-1. Subscribe on Steam Workshop, then enable **Auto Pricing** in Parkitect's mod settings. Restart the game if prompted. Alternatively, copy `AutoPrecios.dll` into its own folder under the game's `Mods` directory and enable it there.
+1. [Subscribe on Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3832850553), then enable **Auto Pricing** in Parkitect's mod settings. Restart the game if prompted. Alternatively, download the [release](https://github.com/weedoozas/parkitect-auto-pricing/releases/latest) and copy `AutoPrecios.dll` into its own folder under the game's `Mods` directory and enable it there.
 2. Open the mod's settings to choose whether it controls rides, shops, or both, the price level, the target maximum share of interested guests priced out, and how often to adjust prices.
 3. Next to a ride or product price, click **Auto-pricing ON** to take manual control; click it again to resume automatic pricing. Hover for the suggested price and estimated share of interested guests who would refuse the current price. Synchronized product prices share the same switch.
 

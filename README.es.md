@@ -4,7 +4,7 @@ El mod ajusta automáticamente los precios de las atracciones y los productos se
 
 ## Instalación y uso
 
-Suscríbete en Steam Workshop y activa **Auto Pricing** en los ajustes de mods del juego. Como alternativa, copia `AutoPrecios.dll` a una carpeta propia dentro de `Mods` y actívalo. En los ajustes puedes elegir atracciones y tiendas, nivel de precio, porcentaje máximo deseado de visitantes interesados que no pagarían e intervalo de ajuste.
+[Suscríbete en Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3832850553) y activa **Auto Pricing** en los ajustes de mods del juego. Como alternativa, descarga la [versión publicada](https://github.com/weedoozas/parkitect-auto-pricing/releases/latest) y copia `AutoPrecios.dll` a una carpeta propia dentro de `Mods` y actívalo. En los ajustes puedes elegir atracciones y tiendas, nivel de precio, porcentaje máximo deseado de visitantes interesados que no pagarían e intervalo de ajuste.
 
 Pulsa **Precio auto. SÍ** junto al precio de una atracción o producto para fijarlo manualmente; vuelve a pulsarlo para automatizarlo. El texto de ayuda muestra el precio sugerido y una estimación de rechazos. Los productos con precio sincronizado comparten el interruptor. Los ajustes individuales se guardan por parque en la carpeta de datos persistentes del juego, dentro de `AutoPricing`. Desactivar el mod no restaura los precios anteriores; puedes guardar una copia antes de probarlo.
 
