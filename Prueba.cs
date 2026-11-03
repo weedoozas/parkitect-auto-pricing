@@ -20,6 +20,7 @@ namespace AutoPrecios
 		public static bool soloInforme;
 		// ventanas=1: abre la ventana de una atracción y de una tienda para hacer capturas.
 		private bool abrirVentanas;
+		private string tiendaBuscada;
 
 		private string partida;
 		private float velocidad = 3f;
@@ -36,6 +37,11 @@ namespace AutoPrecios
 			catch (System.Exception e) { Debug.LogWarning("[AutoPrecios] Cannot create data directory: " + e.Message); carpeta = null; }
 			string archivo = System.IO.Path.Combine(carpetaMod ?? "", "prueba.txt");
 			if (string.IsNullOrEmpty(carpetaMod) || !File.Exists(archivo))
+			{
+				return;
+			}
+			// Con dos copias del mod instaladas, solo una abre la partida.
+			if (activa || GameObject.Find("AutoPrecios.Prueba") != null)
 			{
 				return;
 			}
@@ -60,6 +66,10 @@ namespace AutoPrecios
 				if (clave == "partida")
 				{
 					partida = valor;
+				}
+				else if (clave == "tienda")
+				{
+					tiendaBuscada = valor;
 				}
 				else if (clave == "ventanas")
 				{
@@ -91,6 +101,7 @@ namespace AutoPrecios
 			{
 				if (a != null && a.onOpenInfoWindow())
 				{
+					enfocar(a.transform.position);
 					break;
 				}
 			}
@@ -101,8 +112,9 @@ namespace AutoPrecios
 			cerrarVentanas();
 			foreach (Shop s in park.getShops())
 			{
-				if (s is ProductShop && ((ProductShop)s).selectedProducts.Length > 0 && s.onOpenInfoWindow())
+				if (s is ProductShop && ((ProductShop)s).selectedProducts.Length > 0 && esTiendaBuscada(s) && s.onOpenInfoWindow())
 				{
+					enfocar(s.transform.position);
 					break;
 				}
 			}
@@ -167,6 +179,37 @@ namespace AutoPrecios
 				}
 			}
 			return sb.Append(']').ToString();
+		}
+
+		// tienda=<texto>: abrir la tienda cuyo nombre o algún producto contiene ese texto.
+		private bool esTiendaBuscada(Shop s)
+		{
+			if (string.IsNullOrEmpty(tiendaBuscada))
+			{
+				return true;
+			}
+			string buscado = tiendaBuscada.ToLowerInvariant();
+			if (s.getCustomizedName().ToLowerInvariant().Contains(buscado))
+			{
+				return true;
+			}
+			foreach (Product p in ((ProductShop)s).selectedProducts)
+			{
+				if (p != null && p.getReferenceName().ToLowerInvariant().Contains(buscado))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		// Mueve la cámara hacia el objeto para que la captura muestre el parque.
+		private static void enfocar(Vector3 posicion)
+		{
+			if (GameController.Instance != null && GameController.Instance.cameraController != null)
+			{
+				GameController.Instance.cameraController.panTo(posicion);
+			}
 		}
 
 		private static void capturar(int n)

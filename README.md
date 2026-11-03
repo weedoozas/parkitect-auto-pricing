@@ -34,6 +34,10 @@ The green switch enables automatic pricing on a ride:
 
 ![Ride window with automatic pricing enabled](assets/screenshots/ride.jpg)
 
+Shop products get the same switch; drinks and food are priced automatically too:
+
+![Drink shop with automatic pricing enabled](assets/screenshots/shop-auto.jpg)
+
 The grey switch leaves the selected shop product under manual control:
 
 ![Shop product with automatic pricing disabled](assets/screenshots/shop-manual.jpg)

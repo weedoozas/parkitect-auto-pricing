@@ -28,6 +28,8 @@ Pulsa **Precio auto. SÍ** junto al precio de una atracción o producto para fij
 
 ![Atracción con precio automático activado](assets/screenshots/ride-es.jpg)
 
+![Tienda de bebidas con precio automático activado](assets/screenshots/shop-auto-es.jpg)
+
 ![Producto con precio automático desactivado](assets/screenshots/shop-manual-es.jpg)
 
 Las capturas son del juego; la portada fue creada con IA.

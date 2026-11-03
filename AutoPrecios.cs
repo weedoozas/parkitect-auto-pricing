@@ -12,6 +12,8 @@ namespace AutoPrecios
 	// Punto de entrada del mod: Parkitect crea esta clase al cargar la DLL.
 	public class AutoPreciosMod : AbstractMod, IModSettings
 	{
+		private const string NOMBRE_HOST = "AutoPrecios";
+
 		private GameObject host;
 
 		public AutoPreciosMod()
@@ -25,14 +27,20 @@ namespace AutoPrecios
 		public override string getDescription() =>
 			Texto.Elegir("Automatically adjusts ride and shop prices based on guest valuations.", "Ajusta automáticamente los precios de atracciones y tiendas según la valoración de los visitantes.");
 
-		public override string getVersionNumber() => "1.2.0";
+		public override string getVersionNumber() => "1.2.1";
 
 		public override string getIdentifier() => "wezzz.autoprecios";
 
 		public override void onEnabled()
 		{
+			// El mod puede estar instalado dos veces (Workshop y carpeta Mods): solo actúa una copia.
+			if (GameObject.Find(NOMBRE_HOST) != null)
+			{
+				Debug.Log("[AutoPrecios] Another copy of the mod is already active; this one stays idle.");
+				return;
+			}
 			Ajustes.cargar();
-			host = new GameObject("AutoPrecios");
+			host = new GameObject(NOMBRE_HOST);
 			Object.DontDestroyOnLoad(host);
 			host.AddComponent<Ajustador>();
 			host.AddComponent<Interfaz>();
