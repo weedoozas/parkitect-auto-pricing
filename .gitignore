@@ -1,0 +1,11 @@
+bin/
+obj/
+*.user
+*.suo
+prueba.txt
+informe.txt
+historial.csv
+estado-*.txt
+*.park
+
+captura-*.png
