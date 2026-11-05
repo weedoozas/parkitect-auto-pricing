@@ -9,6 +9,14 @@ namespace AutoPrecios
 	// Se guarda por parque en la carpeta del mod: estado-<guid del parque>.txt.
 	internal static class Estado
 	{
+		// Qué busca el mod en todo el parque. Se guarda por parque: modo-<guid>.txt.
+		internal enum Modo
+		{
+			Dinero,
+			Rating,
+			Apagado
+		}
+
 		internal class Resultado
 		{
 			public float sugerido;
@@ -18,6 +26,50 @@ namespace AutoPrecios
 
 		private static string parque;
 		private static readonly HashSet<string> apagados = new HashSet<string>();
+		private static Modo modoParque = Modo.Dinero;
+
+		public static Modo modo
+		{
+			get
+			{
+				comprobarParque();
+				return modoParque;
+			}
+		}
+
+		public static void cambiarModo(Modo nuevo)
+		{
+			comprobarParque();
+			if (modoParque == nuevo)
+			{
+				return;
+			}
+			modoParque = nuevo;
+			if (Prueba.activa)
+			{
+				return;
+			}
+			string archivo = rutaDe("modo");
+			if (archivo == null)
+			{
+				return;
+			}
+			try
+			{
+				File.WriteAllText(archivo, nuevo.ToString());
+			}
+			catch (System.Exception e)
+			{
+				Debug.LogWarning("[AutoPrecios] Could not save the pricing mode: " + e.Message);
+			}
+		}
+
+		// Este precio lo fijó el jugador a mano (independiente del modo del parque).
+		public static bool esManual(string clave)
+		{
+			comprobarParque();
+			return apagados.Contains(clave);
+		}
 		private static readonly Dictionary<string, Resultado> resultados = new Dictionary<string, Resultado>();
 
 		public static string claveAtraccion(Attraction a)
@@ -38,7 +90,7 @@ namespace AutoPrecios
 		public static bool esAuto(string clave)
 		{
 			comprobarParque();
-			return !apagados.Contains(clave);
+			return modoParque != Modo.Apagado && !apagados.Contains(clave);
 		}
 
 		public static void cambiar(string clave, bool auto)
@@ -80,6 +132,7 @@ namespace AutoPrecios
 			parque = guid;
 			apagados.Clear();
 			resultados.Clear();
+			modoParque = leerModo();
 			string archivo = ruta();
 			if (archivo != null && File.Exists(archivo))
 			{
@@ -97,10 +150,33 @@ namespace AutoPrecios
 			}
 		}
 
+		private static Modo leerModo()
+		{
+			if (Prueba.modoForzado != null)
+			{
+				return Prueba.modoForzado == "rating" ? Modo.Rating : Prueba.modoForzado == "off" ? Modo.Apagado : Modo.Dinero;
+			}
+			string archivo = rutaDe("modo");
+			try
+			{
+				if (archivo != null && File.Exists(archivo))
+				{
+					string texto = File.ReadAllText(archivo).Trim();
+					return texto == "Rating" ? Modo.Rating : texto == "Apagado" ? Modo.Apagado : Modo.Dinero;
+				}
+			}
+			catch (System.Exception e)
+			{
+				Debug.LogWarning("[AutoPrecios] Could not read the pricing mode: " + e.Message);
+			}
+			return Modo.Dinero;
+		}
+
 		private static void guardar()
 		{
 			string archivo = ruta();
-			if (archivo == null)
+			// Las pruebas no deben dejar interruptores cambiados en la partida original.
+			if (archivo == null || Prueba.activa)
 			{
 				return;
 			}
@@ -116,11 +192,16 @@ namespace AutoPrecios
 
 		private static string ruta()
 		{
+			return rutaDe("estado");
+		}
+
+		private static string rutaDe(string prefijo)
+		{
 			if (string.IsNullOrEmpty(parque) || Prueba.carpeta == null)
 			{
 				return null;
 			}
-			return System.IO.Path.Combine(Prueba.carpeta, "estado-" + parque + ".txt");
+			return System.IO.Path.Combine(Prueba.carpeta, prefijo + "-" + parque + ".txt");
 		}
 	}
 }

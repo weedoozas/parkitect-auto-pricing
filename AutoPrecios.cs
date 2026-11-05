@@ -22,14 +22,20 @@ namespace AutoPrecios
 			Prueba.iniciarSiHayArchivo();
 		}
 
+#if BETA
+		public override string getName() => "Auto Pricing BETA";
+
+		public override string getIdentifier() => "wezzz.autoprecios.beta";
+#else
 		public override string getName() => "Auto Pricing";
+
+		public override string getIdentifier() => "wezzz.autoprecios";
+#endif
 
 		public override string getDescription() =>
 			Texto.Elegir("Automatically adjusts ride and shop prices based on guest valuations.", "Ajusta automáticamente los precios de atracciones y tiendas según la valoración de los visitantes.");
 
-		public override string getVersionNumber() => "1.2.1";
-
-		public override string getIdentifier() => "wezzz.autoprecios";
+		public override string getVersionNumber() => "1.3.0-beta.1";
 
 		public override void onEnabled()
 		{
@@ -76,7 +82,8 @@ namespace AutoPrecios
 			GUILayout.Space(8f);
 			GUILayout.Label(Texto.Elegir("Price level: ", "Nivel de precio: ") + Ajustes.nivel.ToString("0.00") + Texto.Elegir(" × the typical guest valuation (", " × el valor del visitante típico (") +
 				describirNivel(Ajustes.nivel) + ")");
-			Ajustes.nivel = Mathf.Round(GUILayout.HorizontalSlider(Ajustes.nivel, 0.8f, 1.5f) * 20f) / 20f;
+			Ajustes.nivel = Mathf.Round(GUILayout.HorizontalSlider(Ajustes.nivel, 0.5f, 1.5f) * 20f) / 20f;
+			GUILayout.Label(Texto.Elegir("This is the level used by Money. Level now: ", "Este es el nivel que usa Dinero. Nivel ahora: ") + Ajustador.nivelActual.ToString("0.00"));
 			GUILayout.Space(8f);
 			GUILayout.Label(Texto.Elegir("Target maximum share of interested guests priced out: ", "Porcentaje máximo deseado de visitantes interesados que no pagarían: ") + Mathf.RoundToInt(Ajustes.rechazoMax * 100f) +
 				"%");
@@ -126,6 +133,10 @@ namespace AutoPrecios
 			nivel = PlayerPrefs.GetFloat("autoprecios.nivel", 1.25f);
 			rechazoMax = PlayerPrefs.GetFloat("autoprecios.rechazoMax", 0.1f);
 			intervalo = PlayerPrefs.GetFloat("autoprecios.intervalo", 20f);
+			if (Prueba.nivelForzado > 0f)
+			{
+				nivel = Prueba.nivelForzado;
+			}
 		}
 
 		public static void guardar()
@@ -172,6 +183,9 @@ namespace AutoPrecios
 		private readonly List<float> valores = new List<float>();
 		private static bool pronto;
 
+		// Nivel de precio en uso, según el modo del parque.
+		public static float nivelActual = 1.25f;
+
 		// Tras encender un interruptor: ajustar en el siguiente fotograma, sin esperar el intervalo.
 		public static void ajustarPronto()
 		{
@@ -204,6 +218,7 @@ namespace AutoPrecios
 			siguiente = Time.unscaledTime + Mathf.Max(5f, Ajustes.intervalo);
 			try
 			{
+				nivelActual = Objetivos.nivelEfectivo(gc.park);
 				if (Informe.activo)
 				{
 					Informe.empezar(gc.park);
@@ -233,7 +248,7 @@ namespace AutoPrecios
 
 		private void ajustarAtracciones(Park park)
 		{
-			float nivel = Ajustes.nivel;
+			float nivel = nivelActual;
 			if (Ajustes.moderarConEntrada && park.parkInfo != null && park.parkInfo.parkEntranceFee > 0f)
 			{
 				nivel *= FACTOR_CON_ENTRADA;
@@ -384,7 +399,7 @@ namespace AutoPrecios
 			{
 				return 0f;
 			}
-			return precioObjetivo(valores, Mathf.Min(Ajustes.nivel, LIMITE_QUEJA_PRODUCTO), LIMITE_QUEJA_PRODUCTO);
+			return precioObjetivo(valores, Mathf.Min(nivelActual, LIMITE_QUEJA_PRODUCTO), LIMITE_QUEJA_PRODUCTO);
 		}
 
 		// nivel × mediana del valor, sin pasar del precio que dejaría fuera a más de

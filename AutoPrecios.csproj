@@ -16,6 +16,14 @@
     <ModFolder Condition="'$(ModFolder)' == ''">$(HOME)/.local/share/Steam/steamapps/common/Parkitect/Mods/AutoPrecios</ModFolder>
   </PropertyGroup>
 
+  <!-- Copia de prueba: otro ensamblado y otro identificador, para instalarla junto a la versión
+       del Workshop sin tocarla (`dotnet build -c Beta -p:InstallMod=true`). -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Beta'">
+    <AssemblyName>AutoPreciosBeta</AssemblyName>
+    <DefineConstants>$(DefineConstants);BETA</DefineConstants>
+    <ModFolder>$(HOME)/.local/share/Steam/steamapps/common/Parkitect/Mods/AutoPrecios-beta</ModFolder>
+  </PropertyGroup>
+
   <ItemGroup>
     <Reference Include="mscorlib"><HintPath>$(GameManaged)/mscorlib.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="netstandard"><HintPath>$(GameManaged)/netstandard.dll</HintPath><Private>false</Private></Reference>

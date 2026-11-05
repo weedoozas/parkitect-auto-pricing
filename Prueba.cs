@@ -20,6 +20,11 @@ namespace AutoPrecios
 		public static bool soloInforme;
 		// ventanas=1: abre la ventana de una atracción y de una tienda para hacer capturas.
 		private bool abrirVentanas;
+		// nivel=<n> y modo=money|rating|off: fijan el nivel y el modo para comparar partidas.
+		public static float nivelForzado = -1f;
+		public static string modoForzado;
+		// meta=<n>: añade en memoria una meta opcional de nota general (no se guarda en la partida).
+		private float metaDePrueba = -1f;
 		private string tiendaBuscada;
 
 		private string partida;
@@ -67,6 +72,18 @@ namespace AutoPrecios
 				{
 					partida = valor;
 				}
+				else if (clave == "nivel" && float.TryParse(valor, NumberStyles.Float, CultureInfo.InvariantCulture, out numero))
+				{
+					nivelForzado = numero;
+				}
+				else if (clave == "meta" && float.TryParse(valor, NumberStyles.Float, CultureInfo.InvariantCulture, out numero))
+				{
+					metaDePrueba = numero;
+				}
+				else if (clave == "modo")
+				{
+					modoForzado = valor;
+				}
 				else if (clave == "tienda")
 				{
 					tiendaBuscada = valor;
@@ -92,8 +109,9 @@ namespace AutoPrecios
 				(soloInforme ? " (solo informe)" : ""));
 		}
 
-		// Capturas en la carpeta del mod: 1 ventana de atracción, 2 productos de una tienda con
-		// el auto-precio encendido, 3 la misma tienda con el primer producto apagado.
+		// Capturas en la carpeta de datos, pulsando los botones por código: 1 atracción en Money,
+		// 2 atracción en Rating, 3 tienda en Rating, 4 producto en OFF, 5 lista de atracciones,
+		// 6 parque apagado.
 		private System.Collections.IEnumerator capturas(Park park)
 		{
 			yield return new WaitForSecondsRealtime(12f);
@@ -109,6 +127,10 @@ namespace AutoPrecios
 			volcarJerarquia();
 			capturar(1);
 			yield return new WaitForSecondsRealtime(1f);
+			elegirModo(Estado.Modo.Rating);
+			yield return new WaitForSecondsRealtime(3f);
+			capturar(2);
+			yield return new WaitForSecondsRealtime(1f);
 			cerrarVentanas();
 			foreach (Shop s in park.getShops())
 			{
@@ -119,22 +141,86 @@ namespace AutoPrecios
 				}
 			}
 			yield return null;
-			abrirPestanaDeProductos();
+			abrirPestanaCon<Parkitect.UI.ShopProductInfoEntry>();
 			yield return new WaitForSecondsRealtime(2f);
 			volcarJerarquia();
-			capturar(2);
+			capturar(3);
 			yield return new WaitForSecondsRealtime(1f);
 			foreach (Parkitect.UI.ShopProductInfoEntry e in Object.FindObjectsOfType<Parkitect.UI.ShopProductInfoEntry>())
 			{
 				Interfaz.Interruptor i = e.GetComponentInChildren<Interfaz.Interruptor>();
 				if (i != null && i.clave != null)
 				{
-					Estado.cambiar(i.clave, false);
+					i.alternar();
+					Debug.Log("[AutoPrecios] Modo prueba: " + i.clave + " automático: " + Estado.esAuto(i.clave));
 					break;
 				}
 			}
 			yield return new WaitForSecondsRealtime(1.5f);
-			capturar(3);
+			capturar(4);
+			yield return new WaitForSecondsRealtime(1f);
+			cerrarVentanas();
+			abrirListaDeAtracciones();
+			yield return null;
+			abrirPestanaCon<Parkitect.UI.AttractionsOverviewTab>();
+			yield return new WaitForSecondsRealtime(3f);
+			volcarJerarquia();
+			capturar(5);
+			yield return new WaitForSecondsRealtime(1f);
+			elegirModo(Estado.Modo.Apagado);
+			moverPanel();
+			yield return new WaitForSecondsRealtime(2f);
+			capturar(6);
+			yield return new WaitForSecondsRealtime(1f);
+			if (Interfaz.panel != null)
+			{
+				Interfaz.panel.mostrarAyuda(1);
+			}
+			yield return new WaitForSecondsRealtime(1f);
+			capturar(7);
+		}
+
+		private static void abrirListaDeAtracciones()
+		{
+			foreach (Parkitect.UI.AttractionsOverviewTab t in Resources.FindObjectsOfTypeAll<Parkitect.UI.AttractionsOverviewTab>())
+			{
+				Transform actual = t.transform;
+				while (actual != null && actual.GetComponent<Parkitect.UI.UIWindow>() == null)
+				{
+					actual = actual.parent;
+				}
+				if (actual != null)
+				{
+					Parkitect.UI.UIWindowsController.Instance.spawnWindowFromPrefab(actual.GetComponent<Parkitect.UI.UIWindow>());
+					Debug.Log("[AutoPrecios] Modo prueba: lista de atracciones abierta desde " + actual.name);
+					return;
+				}
+			}
+			Debug.LogWarning("[AutoPrecios] Modo prueba: no se encontró la lista de atracciones");
+		}
+
+		private static void elegirModo(Estado.Modo modo)
+		{
+			if (Interfaz.panel == null)
+			{
+				Debug.LogWarning("[AutoPrecios] Modo prueba: no se encontró el panel");
+				return;
+			}
+			Interfaz.panel.elegir(modo);
+			Debug.Log("[AutoPrecios] Modo prueba: modo del parque " + Estado.modo);
+		}
+
+		// Simula arrastrar el panel 300 px a la izquierda, sin guardar la posición.
+		private static void moverPanel()
+		{
+			if (Interfaz.panel == null)
+			{
+				return;
+			}
+			RectTransform r = Interfaz.panel.GetComponent<RectTransform>();
+			Vector2 antes = r.anchoredPosition;
+			Interfaz.panel.OnDrag(new UnityEngine.EventSystems.PointerEventData(UnityEngine.EventSystems.EventSystem.current) { delta = new Vector2(-300f, 120f) });
+			Debug.Log("[AutoPrecios] Modo prueba: panel movido de " + antes + " a " + r.anchoredPosition);
 		}
 
 		// Para colocar el interruptor: escribe en el log la cadena de padres de cada casilla de
@@ -225,7 +311,7 @@ namespace AutoPrecios
 			}
 		}
 
-		private static void abrirPestanaDeProductos()
+		private static void abrirPestanaCon<T>() where T : Component
 		{
 			System.Reflection.FieldInfo paneles = typeof(Parkitect.UI.UITabGroup).GetField("tabPanels",
 				System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
@@ -238,7 +324,7 @@ namespace AutoPrecios
 				}
 				foreach (Transform panel in lista)
 				{
-					if (panel != null && panel.GetComponentInChildren<Parkitect.UI.ShopProductInfoEntry>(true) != null)
+					if (panel != null && panel.GetComponentInChildren<T>(true) != null)
 					{
 						g.openTab(panel);
 						return;
@@ -274,6 +360,10 @@ namespace AutoPrecios
 					if (Time.unscaledTime - momento > 5f)
 					{
 						gc.triggerChangeGameSpeed(velocidad);
+						if (metaDePrueba > 0f)
+						{
+							gc.park.scenario.goals.addGoal(new ParkOverallRatingGoal { value = metaDePrueba, isOptional = true });
+						}
 						if (abrirVentanas)
 						{
 							StartCoroutine(capturas(gc.park));
@@ -314,7 +404,7 @@ namespace AutoPrecios
 			texto.AppendLine("Guests " + park.getGuests().Count + " · money " + info.money.ToString("0", inv) +
 				" · park rating " + pct(info.getOverallRating()) + " · price satisfaction " +
 				pct(info.RatingPriceSatisfaction) + " · admission " + info.parkEntranceFee.ToString("0.00", inv) +
-				" · level " + Ajustes.nivel.ToString("0.00", inv));
+				" · level " + Ajustador.nivelActual.ToString("0.00", inv));
 			texto.AppendLine();
 			texto.AppendLine("RIDES (value = valuation by an interested guest)");
 			texto.AppendLine("name | excitement | interested guests | value p10/median/p90 | price before → after | refuse | mean satisfaction | customers");
@@ -359,11 +449,12 @@ namespace AutoPrecios
 			string csv = System.IO.Path.Combine(Prueba.carpeta, "historial.csv");
 			if (!File.Exists(csv))
 			{
-				File.WriteAllText(csv, "ajuste,tiempo,visitantes,dinero,nota,satisfaccion_precios\n");
+				File.WriteAllText(csv, "ajuste,tiempo,visitantes,dinero,nota,satisfaccion_precios,experiencias,felicidad,nivel\n");
 			}
 			ParkInfo info = park.parkInfo;
-			File.AppendAllText(csv, string.Format(inv, "{0},{1},{2},{3:0},{4:0.000},{5:0.000}\n", ajustes, ParkInfo.ParkTime,
-				park.getGuests().Count, info.money, info.getOverallRating(), info.RatingPriceSatisfaction));
+			File.AppendAllText(csv, string.Format(inv, "{0},{1},{2},{3:0},{4:0.000},{5:0.000},{6:0.000},{7:0.000},{8:0.00}\n", ajustes, ParkInfo.ParkTime,
+				park.getGuests().Count, info.money, info.getOverallRating(), info.RatingPriceSatisfaction,
+				info.RatingExperiences, info.RatingHappiness, Ajustador.nivelActual));
 		}
 
 		private static string rango(List<float> v)
