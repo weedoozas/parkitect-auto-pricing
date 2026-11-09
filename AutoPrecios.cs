@@ -35,7 +35,11 @@ namespace AutoPrecios
 		public override string getDescription() =>
 			Texto.Elegir("Automatically adjusts ride and shop prices based on guest valuations.", "Ajusta automáticamente los precios de atracciones y tiendas según la valoración de los visitantes.");
 
+#if BETA
 		public override string getVersionNumber() => "1.3.0-beta.1";
+#else
+		public override string getVersionNumber() => "1.3.0";
+#endif
 
 		public override void onEnabled()
 		{
