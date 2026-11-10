@@ -47,17 +47,21 @@ Automatic pricing is on by default, in Money mode. Global settings and the panel
 
 ## Screenshots
 
-The green switch enables automatic pricing on a ride:
+Ride window: the green switch makes this ride's price automatic, and the **Auto-pricing** panel at the bottom right chooses Money, Rating or Off for the whole park:
 
 ![Ride window with automatic pricing enabled](assets/screenshots/ride.jpg)
 
-Shop products get the same switch; drinks and food are priced automatically too:
+Shop products get the same switch; drinks and food are priced automatically too (here with the park in Rating mode):
 
 ![Drink shop with automatic pricing enabled](assets/screenshots/shop-auto.jpg)
 
 The grey switch leaves the selected shop product under manual control:
 
 ![Shop product with automatic pricing disabled](assets/screenshots/shop-manual.jpg)
+
+In the ride list the switch reads just ON or OFF:
+
+![Ride list with automatic pricing switches](assets/screenshots/list.jpg)
 
 Screenshots are from the game; the cover illustration is AI-generated.
 

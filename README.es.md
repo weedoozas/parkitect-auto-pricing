@@ -50,11 +50,19 @@ El ajuste automático está activado por defecto, en modo Dinero. Los ajustes ge
 
 ## Capturas
 
+Ventana de una atracción: el interruptor verde hace automático el precio de esa atracción, y el panel **Auto-pricing** de abajo a la derecha elige Dinero, Rating o Apagado para todo el parque:
+
 ![Atracción con precio automático activado](assets/screenshots/ride-es.jpg)
 
-![Tienda de bebidas con precio automático activado](assets/screenshots/shop-auto-es.jpg)
+Los productos de las tiendas tienen el mismo interruptor (aquí con el parque en modo Rating):
+
+![Producto con precio automático activado](assets/screenshots/shop-auto-es.jpg)
 
 ![Producto con precio automático desactivado](assets/screenshots/shop-manual-es.jpg)
+
+En la lista de atracciones el interruptor solo dice ON u OFF:
+
+![Lista de atracciones con interruptores de precio automático](assets/screenshots/list-es.jpg)
 
 Las capturas son del juego; la portada fue creada con IA.
 
